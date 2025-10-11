@@ -1,4 +1,44 @@
 import type { Metadata } from "next";
+import "./globals.css";
+import { AuthProvider } from "@/context/AuthContext";
+import NavBar from "@/components/layout/NavBar"; // <- make sure file is components/layout/Navbar.tsx
+
+export const metadata: Metadata = { title: "Data Labeling", description: "MVP" };
+
+export default function RootLayout({ children }: { children: React.ReactNode }) {
+  return (
+    <html lang="en">
+      <body className="min-h-screen bg-gray-50">
+        <AuthProvider>
+          <NavBar />
+          {children}
+        </AuthProvider>
+      </body>
+    </html>
+  );
+}
+
+
+// import type { Metadata } from "next";
+// import "./globals.css";
+// import { AuthProvider } from "@/context/AuthContext";
+// import Navbar from "@/components/layout/NavBar";
+
+// export const metadata: Metadata = { title: "Data Labeling", description: "MVP" };
+
+// export default function RootLayout({ children }: { children: React.ReactNode }) {
+//   return (
+//     <html lang="en">
+//       <body>
+//         <AuthProvider>{children}</AuthProvider>
+//       </body>
+//     </html>
+//   );
+// }
+
+
+/*
+import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 
@@ -32,3 +72,4 @@ export default function RootLayout({
     </html>
   );
 }
+*/
