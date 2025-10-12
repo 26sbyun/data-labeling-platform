@@ -20,6 +20,7 @@ export default function Navbar() {
     { href: "/contact", label: "Contact" },
     { href: "/join", label: "Join" },
     { href: "/admin", label: "Admin" },
+    { href: "/industries", label: "Industries" },
     ];
 
   const handleLogout = async () => {

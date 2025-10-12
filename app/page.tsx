@@ -1,12 +1,20 @@
-export default function Home() {
+import Hero from "@/components/home/Hero";
+import Services from "@/components/home/Services";
+import Logos from "@/components/home/Logos";
+import HowItWorks from "@/components/home/HowItWorks";
+import FAQ from "@/components/home/FAQ";
+
+export default function HomePage() {
   return (
-    <main style={{ padding: 24 }}>
-      <h1>It works 🎉</h1>
-      <p>Go to <a href="/register">/register</a> or <a href="/login">/login</a>.</p>
+    <main>
+      <Hero />
+      <Logos />
+      <Services />
+      <HowItWorks />
+      <FAQ />
     </main>
   );
 }
-
 // import Image from "next/image";
 
 // export default function Home() {

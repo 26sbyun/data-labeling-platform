@@ -42,12 +42,6 @@ export default function ProjectsPage() {
 
   return (
     <div className="p-6 space-y-6">
-        <Link
-  href="/dashboard/projects"
-  className="inline-block border rounded px-4 py-2 mt-4 hover:bg-gray-50"
->
-  View Projects
-</Link>
       <h1 className="text-2xl font-semibold">My Projects</h1>
       <NewProjectForm />
       {err && <p className="text-red-600 text-sm">{err}</p>}

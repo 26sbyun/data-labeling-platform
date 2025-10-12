@@ -301,27 +301,57 @@ export default function AdminPage() {
           ) : (
             <ul className="space-y-3">
               {filteredJoins.map((j) => (
-                <li
-                  key={j.id}
-                  className="border border-gray-700 rounded-lg p-4 bg-black/40"
-                >
+                // new change
+                <li key={j.id} className="border border-gray-700 rounded-lg p-4 bg-black/40">
                   <div className="flex justify-between gap-6">
                     <div className="min-w-0">
                       <p className="font-semibold truncate">
-                        {j.name}
-                        <button
-                          onClick={() => navigator.clipboard.writeText(j.email)}
-                          className="ml-3 text-xs text-blue-400 hover:text-blue-300 underline"
-                          title="Copy email"
-                        >
-                          Copy email
-                        </button>
+                        {j.name} <span className="ml-2 text-xs text-blue-400">[{(j as any).role ?? "join"}]</span>
                       </p>
                       <p className="text-gray-400 text-sm truncate">{j.email}</p>
-                      <p className="mt-2 text-gray-200 whitespace-pre-wrap break-words">
-                        {j.skills}
+
+                      {/* Provider fields */}
+                      {(j as any).company && (
+                        <p className="text-gray-300 text-sm mt-1">
+                          <span className="text-gray-500">Company:</span> {(j as any).company}
+                        </p>
+                      )}
+                      {(j as any).dataTypes && Array.isArray((j as any).dataTypes) && (
+                        <p className="text-gray-300 text-sm mt-1">
+                          <span className="text-gray-500">Data types:</span> {(j as any).dataTypes.join(", ")}
+                        </p>
+                      )}
+
+                      {/* Labeler fields */}
+                      {(j as any).experience && (
+                        <p className="text-gray-300 text-sm mt-1">
+                          <span className="text-gray-500">Experience:</span> {(j as any).experience}
+                        </p>
+                      )}
+                      {(j as any).availability && (
+                        <p className="text-gray-300 text-sm mt-1">
+                          <span className="text-gray-500">Availability:</span> {(j as any).availability}
+                        </p>
+                      )}
+                      {(j as any).hourlyRate != null && (
+                        <p className="text-gray-300 text-sm mt-1">
+                          <span className="text-gray-500">Rate:</span> ${(j as any).hourlyRate}/hr
+                        </p>
+                      )}
+
+                      {/* Common freeform */}
+                      {j.skills && (
+                        <p className="mt-2 text-gray-200 whitespace-pre-wrap break-words">{j.skills}</p>
+                      )}
+                      {(j as any).projectDescription && (
+                        <p className="mt-2 text-gray-200 whitespace-pre-wrap break-words">
+                          {(j as any).projectDescription}
+                        </p>
+                      )}
+
+                      <p className="text-xs text-gray-500 mt-1">
+                        {j.createdAt?.toDate ? j.createdAt.toDate().toLocaleString() : "Just now"}
                       </p>
-                      <p className="text-xs text-gray-500 mt-1">{when(j.createdAt)}</p>
                     </div>
                     <button
                       onClick={() => handleDelete("join_requests", j.id)}
@@ -331,6 +361,36 @@ export default function AdminPage() {
                     </button>
                   </div>
                 </li>
+                // <li
+                //   key={j.id}
+                //   className="border border-gray-700 rounded-lg p-4 bg-black/40"
+                // >
+                //   <div className="flex justify-between gap-6">
+                //     <div className="min-w-0">
+                //       <p className="font-semibold truncate">
+                //         {j.name}
+                //         <button
+                //           onClick={() => navigator.clipboard.writeText(j.email)}
+                //           className="ml-3 text-xs text-blue-400 hover:text-blue-300 underline"
+                //           title="Copy email"
+                //         >
+                //           Copy email
+                //         </button>
+                //       </p>
+                //       <p className="text-gray-400 text-sm truncate">{j.email}</p>
+                //       <p className="mt-2 text-gray-200 whitespace-pre-wrap break-words">
+                //         {j.skills}
+                //       </p>
+                //       <p className="text-xs text-gray-500 mt-1">{when(j.createdAt)}</p>
+                //     </div>
+                //     <button
+                //       onClick={() => handleDelete("join_requests", j.id)}
+                //       className="text-red-400 hover:text-red-300 text-sm shrink-0"
+                //     >
+                //       Delete
+                //     </button>
+                //   </div>
+                // </li>
               ))}
             </ul>
           )}
