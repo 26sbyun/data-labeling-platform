@@ -4,31 +4,37 @@ import Link from "next/link";
 
 const services = [
   {
+    slug: "image-annotation",
     title: "Image Annotation",
     desc: "Bounding boxes, polygons, keypoints, semantic/instance segmentation.",
     icon: ImageIcon,
   },
   {
+    slug: "video-annotation",
     title: "Video Annotation",
     desc: "Frame-accurate tracking, activity tagging, multi-object timelines.",
     icon: Video,
   },
   {
+    slug: "text-nlp",
     title: "Text & NLP",
     desc: "Classification, entity extraction (NER), sentiment, intent, RAG curation.",
     icon: FileText,
   },
   {
+    slug: "multilingual",
     title: "Multilingual",
     desc: "Native speakers across domains for high-fidelity language tasks.",
     icon: Languages,
   },
   {
+    slug: "data-ops",
     title: "Data Ops",
     desc: "De-duplication, stratified sampling, redaction, QC pipelines.",
     icon: Layers,
   },
   {
+    slug: "model-in-the-loop",
     title: "Model-in-the-loop",
     desc: "Active learning and LLM-assisted reviews to boost throughput.",
     icon: Brain,
@@ -49,19 +55,20 @@ export default function Services() {
           </div>
           <div className="mt-4 md:mt-0">
             <Link
-              href="/pricing"
+              href="/services"
               className="inline-block bg-blue-600 hover:bg-blue-500 text-white rounded-lg px-4 py-2 font-medium"
             >
-              See pricing
+              Explore all
             </Link>
           </div>
         </div>
 
         <div className="mt-8 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-          {services.map(({ title, desc, icon: Icon }) => (
-            <div
+          {services.map(({ title, desc, icon: Icon, slug }) => (
+            <Link
               key={title}
-              className="rounded-xl border border-gray-800 bg-black/40 p-5 hover:border-gray-700 transition"
+              href={`/services/${slug}`}
+              className="rounded-xl border border-gray-800 bg-black/40 p-5 hover:border-gray-700 transition block"
             >
               <div className="flex items-center gap-3">
                 <div className="h-10 w-10 rounded-lg bg-blue-600/15 border border-blue-600/30 grid place-items-center">
@@ -70,19 +77,9 @@ export default function Services() {
                 <h3 className="text-lg font-medium">{title}</h3>
               </div>
               <p className="mt-3 text-sm text-gray-300">{desc}</p>
-              <div className="mt-4">
-                <Link href="/contact" className="text-blue-400 hover:text-blue-300 underline">
-                  Talk to an engineer →
-                </Link>
-              </div>
-            </div>
+              <div className="mt-4 text-blue-400 underline text-sm">Learn more →</div>
+            </Link>
           ))}
-        </div>
-
-        {/* Industries strip (lightweight teaser) */}
-        <div className="mt-10 rounded-xl border border-gray-800 bg-black/30 p-4 text-gray-300 text-sm">
-          Serving teams in healthcare, robotics, automotive, retail, and fintech.{" "}
-          <Link href="/contact" className="underline text-blue-400">Get a tailored scope</Link>.
         </div>
       </div>
     </section>

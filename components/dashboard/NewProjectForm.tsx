@@ -1,3 +1,4 @@
+// components/dashboard/NewProjectForm.tsx
 "use client";
 
 import { useState, FormEvent } from "react";
@@ -10,51 +11,69 @@ export default function NewProjectForm() {
   const { user } = useAuth();
   const router = useRouter();
   const [title, setTitle] = useState("");
-  const [desc, setDesc] = useState("");
+  const [description, setDescription] = useState("");
+  const [creating, setCreating] = useState(false);
   const [err, setErr] = useState<string | null>(null);
-  const [busy, setBusy] = useState(false);
 
-  const onSubmit = async (e: FormEvent) => {
+  const onCreate = async (e: FormEvent) => {
     e.preventDefault();
-    if (!user) return setErr("Please sign in");
-    setErr(null); setBusy(true);
+    if (!user) {
+      setErr("Please sign in.");
+      return;
+    }
+    if (!title.trim()) {
+      setErr("Project title is required.");
+      return;
+    }
+    setErr(null);
+    setCreating(true);
     try {
-      const docRef = await addDoc(collection(db, "projects"), {
+      const ref = await addDoc(collection(db, "projects"), {
+        title: title.trim(),
+        description: description.trim() || null,
         clientId: user.uid,
-        title,
-        description: desc,
-        status: "active",
         createdAt: serverTimestamp(),
+        // OPTIONAL: add targetFiles for progress if you want
+        // targetFiles: 1000,
       });
-      router.push(`/dashboard/projects/${docRef.id}`);
+      setTitle("");
+      setDescription("");
+      router.push(`/dashboard/projects/${ref.id}`);
     } catch (e: any) {
       setErr(e.message ?? "Failed to create project");
     } finally {
-      setBusy(false);
+      setCreating(false);
     }
   };
 
   return (
-    <form onSubmit={onSubmit} className="space-y-3 border rounded-lg p-4">
-      <h3 className="font-semibold">New Project</h3>
-      {err && <p className="text-sm text-red-600">{err}</p>}
-      <input
-        className="w-full border rounded p-2"
-        placeholder="Project title"
-        value={title}
-        onChange={e=>setTitle(e.target.value)}
-        required
-      />
-      <textarea
-        className="w-full border rounded p-2"
-        placeholder="Short description"
-        value={desc}
-        onChange={e=>setDesc(e.target.value)}
-        rows={3}
-      />
-      <button disabled={busy} className="border rounded px-3 py-1">
-        {busy ? "Creating..." : "Create project"}
-      </button>
-    </form>
+    <div className="rounded-xl border border-gray-800 bg-black/40 p-5">
+      <h3 className="font-semibold mb-3">Create a new project</h3>
+      {err && <p className="text-red-500 text-sm mb-2">{err}</p>}
+      <form onSubmit={onCreate} className="grid gap-3 sm:grid-cols-3">
+        <input
+          className="border border-gray-700 bg-black text-white rounded px-3 py-2 sm:col-span-1"
+          placeholder="Project title *"
+          value={title}
+          onChange={(e) => setTitle(e.target.value)}
+          required
+        />
+        <input
+          className="border border-gray-700 bg-black text-white rounded px-3 py-2 sm:col-span-2"
+          placeholder="Short description (optional)"
+          value={description}
+          onChange={(e) => setDescription(e.target.value)}
+        />
+        <div className="sm:col-span-3">
+          <button
+            type="submit"
+            disabled={creating}
+            className="bg-blue-600 hover:bg-blue-500 rounded px-4 py-2 font-medium"
+          >
+            {creating ? "Creating…" : "Create Project"}
+          </button>
+        </div>
+      </form>
+    </div>
   );
 }

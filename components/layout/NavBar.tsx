@@ -1,136 +1,136 @@
 "use client";
-
 import Link from "next/link";
-import { useAuth } from "@/context/AuthContext";
-import { usePathname, useRouter } from "next/navigation";
 import { useState } from "react";
-import { Menu, X } from "lucide-react"; // lightweight icons
+import { Menu, X, ChevronDown } from "lucide-react";
 
 export default function Navbar() {
-  const { user, signOut } = useAuth();
-  const pathname = usePathname();
-  const router = useRouter();
-  const [menuOpen, setMenuOpen] = useState(false);
+  const [mobileOpen, setMobileOpen] = useState(false);
+  const [openDropdown, setOpenDropdown] = useState<string | null>(null);
 
-  const navLinks = [
+  const toggleDropdown = (label: string) =>
+    setOpenDropdown(openDropdown === label ? null : label);
+
+  const navItems = [
     { href: "/", label: "Home" },
+    { href: "/services", label: "Services" },
     { href: "/pricing", label: "Pricing" },
-    { href: "/dashboard", label: "Dashboard" },
-    { href: "/dashboard/projects", label: "Projects" },
-    { href: "/contact", label: "Contact" },
-    { href: "/join", label: "Join" },
-    { href: "/admin", label: "Admin" },
     { href: "/industries", label: "Industries" },
-    ];
-
-  const handleLogout = async () => {
-    await signOut();
-    router.replace("/");
-  };
+    {
+      label: "Company",
+      sub: [
+        { href: "/company/about", label: "About" },
+        { href: "/company/team", label: "Team" },
+        { href: "/company/careers", label: "Careers" },
+      ],
+    },
+    {
+      label: "Resources",
+      sub: [
+        { href: "/resources/docs", label: "Docs" },
+        { href: "/resources/blog", label: "Blog" },
+        { href: "/resources/api", label: "API" },
+      ],
+    },
+    { href: "/contact", label: "Contact" },
+    { href: "/dashboard", label: "Dashboard" },
+  ];
 
   return (
-    <header className="bg-black/90 backdrop-blur text-white sticky top-0 z-50 shadow-sm border-b border-gray-800">
-      <nav className="max-w-6xl mx-auto flex items-center justify-between px-4 py-3">
-        {/* Brand */}
-        <Link href="/" className="font-semibold text-lg text-white hover:text-gray-300">
+    <nav className="bg-black/90 border-b border-gray-800 text-white sticky top-0 z-50">
+      <div className="max-w-7xl mx-auto flex items-center justify-between px-4 py-3">
+        {/* Logo */}
+        <Link href="/" className="text-lg font-semibold">
           Data Labeling Platform
         </Link>
 
-        {/* Desktop links */}
-        <div className="hidden md:flex items-center gap-5">
-          {navLinks.map(({ href, label }) => (
-            <Link
-              key={href}
-              href={href}
-              className={`hover:text-gray-300 ${
-                pathname === href ? "font-medium text-blue-400" : "text-gray-200"
-              }`}
-            >
-              {label}
-            </Link>
-          ))}
-
-          {!user ? (
-            <>
+        {/* Desktop menu */}
+        <div className="hidden md:flex items-center gap-6">
+          {navItems.map((item) =>
+            item.sub ? (
+              <div key={item.label} className="relative group">
+                <button
+                  onClick={() => toggleDropdown(item.label)}
+                  className="flex items-center gap-1 hover:text-blue-400"
+                >
+                  {item.label}
+                  <ChevronDown size={14} />
+                </button>
+                {openDropdown === item.label && (
+                  <div className="absolute top-full left-0 bg-black border border-gray-700 rounded-lg mt-2 py-2 w-40">
+                    {item.sub.map((s) => (
+                      <Link
+                        key={s.href}
+                        href={s.href}
+                        className="block px-4 py-2 text-sm text-gray-300 hover:text-white hover:bg-gray-900"
+                      >
+                        {s.label}
+                      </Link>
+                    ))}
+                  </div>
+                )}
+              </div>
+            ) : (
               <Link
-                href="/login"
-                className="border border-gray-600 rounded px-3 py-1 hover:bg-gray-800"
+                key={item.href}
+                href={item.href}
+                className="hover:text-blue-400"
               >
-                Login
+                {item.label}
               </Link>
-              <Link
-                href="/register"
-                className="border border-gray-600 rounded px-3 py-1 hover:bg-gray-800"
-              >
-                Sign up
-              </Link>
-            </>
-          ) : (
-            <button
-              onClick={handleLogout}
-              className="border border-gray-600 rounded px-3 py-1 hover:bg-gray-800"
-            >
-              Logout
-            </button>
+            )
           )}
         </div>
 
         {/* Mobile menu button */}
         <button
-          onClick={() => setMenuOpen(!menuOpen)}
-          className="md:hidden text-gray-200 hover:text-gray-100"
-          aria-label="Toggle menu"
+          className="md:hidden p-2 text-gray-300"
+          onClick={() => setMobileOpen(!mobileOpen)}
         >
-          {menuOpen ? <X size={24} /> : <Menu size={24} />}
+          {mobileOpen ? <X size={24} /> : <Menu size={24} />}
         </button>
-      </nav>
+      </div>
 
       {/* Mobile dropdown */}
-      {menuOpen && (
+      {mobileOpen && (
         <div className="md:hidden bg-black border-t border-gray-800 px-4 py-3 space-y-2">
-          {navLinks.map(({ href, label }) => (
-            <Link
-              key={href}
-              href={href}
-              className={`block py-2 hover:text-gray-300 ${
-                pathname === href ? "text-blue-400 font-medium" : "text-gray-200"
-              }`}
-              onClick={() => setMenuOpen(false)}
-            >
-              {label}
-            </Link>
-          ))}
-
-          {!user ? (
-            <>
+          {navItems.map((item) =>
+            item.sub ? (
+              <div key={item.label}>
+                <button
+                  onClick={() => toggleDropdown(item.label)}
+                  className="flex justify-between w-full text-left text-gray-300"
+                >
+                  {item.label}
+                  <ChevronDown size={14} />
+                </button>
+                {openDropdown === item.label && (
+                  <div className="pl-4 mt-1 space-y-1">
+                    {item.sub.map((s) => (
+                      <Link
+                        key={s.href}
+                        href={s.href}
+                        className="block text-gray-400 hover:text-white"
+                        onClick={() => setMobileOpen(false)}
+                      >
+                        {s.label}
+                      </Link>
+                    ))}
+                  </div>
+                )}
+              </div>
+            ) : (
               <Link
-                href="/login"
-                className="block border border-gray-600 rounded px-3 py-1 text-center hover:bg-gray-800"
-                onClick={() => setMenuOpen(false)}
+                key={item.href}
+                href={item.href}
+                className="block text-gray-300 hover:text-white"
+                onClick={() => setMobileOpen(false)}
               >
-                Login
+                {item.label}
               </Link>
-              <Link
-                href="/register"
-                className="block border border-gray-600 rounded px-3 py-1 text-center hover:bg-gray-800"
-                onClick={() => setMenuOpen(false)}
-              >
-                Sign up
-              </Link>
-            </>
-          ) : (
-            <button
-              onClick={() => {
-                handleLogout();
-                setMenuOpen(false);
-              }}
-              className="w-full border border-gray-600 rounded px-3 py-1 hover:bg-gray-800"
-            >
-              Logout
-            </button>
+            )
           )}
         </div>
       )}
-    </header>
+    </nav>
   );
 }
